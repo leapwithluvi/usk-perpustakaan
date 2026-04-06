@@ -1,0 +1,15 @@
+# Dependencies
+node_modules
+
+# IDE
+.idea
+.vscode
+
+# Build
+build
+dist
+
+# Environment Variables
+.env
+/generated/prisma
+/uploads

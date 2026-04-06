@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    // File Layout
+    // "rootDir": "./src",
+    "outDir": "./build",
+
+    // Environment Settings
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "esnext",
+    "types": ["jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@prisma": ["generated/prisma"]
+    },
+
+    // Other Outputs
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Recommended Options
+    "strict": true,
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "files": ["src/types/express.d.ts"],
+  "exclude": ["node_modules/*", "build/*", "prisma.config.ts"]
+}

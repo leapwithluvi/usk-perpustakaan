@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String      @id @default(uuid(7)) @db.Uuid
+  email       String      @unique
+  password    String
+  name        String?
+  phone       String?
+  location    String?
+  avatar      String?
+  role        Role        @default(USER)
+  status      Status      @default(ACTIVE)
+  lastLoginAt DateTime?   @db.Timestamptz(3)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  borrowings  Borrowing[]
+  sessions    Session[]
+}
+
+model Session {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  userId       String   @db.Uuid
+  refreshToken String   @unique
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model Category {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  books     Book[]
+}
+
+model Book {
+  id            String      @id @default(uuid(7)) @db.Uuid
+  title         String
+  slug          String      @unique
+  description   String
+  author        String
+  isbn          String      @unique
+  publishedDate DateTime
+  categoryId    String      @db.Uuid
+  stock         Int
+  maxStock      Int         @default(0)
+  pageCount     Int         @default(0)
+  year          Int         @default(2024)
+  coverImage    String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  category      Category    @relation(fields: [categoryId], references: [id])
+  borrowings    Borrowing[]
+}
+
+model Borrowing {
+  id         String          @id @default(uuid()) @db.Uuid
+  userId     String          @db.Uuid
+  bookId     String          @db.Uuid
+  borrowDate DateTime?
+  dueDate    DateTime
+  returnDate DateTime?
+  status     BorrowingStatus @default(PENDING)
+  pickupCode String?         @unique
+  returnCode String?         @unique
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  book       Book            @relation(fields: [bookId], references: [id])
+  user       User            @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum BorrowingStatus {
+  PENDING
+  APPROVED
+  BORROWED
+  RETURNED
+  REJECTED
+}

@@ -1,4 +1,4 @@
-# 🌟 Digital Atelier — Sistem Manajemen Perpustakaan Modern
+# 🌟 Digital Atelier — Sistem Manajemen Perpustakaan Sederhana
 
 <!-- GitHub badges -->
 [![Stars](https://img.shields.io/github/stars/leapwithluvi/usk-perpustakaan?style=social)](https://github.com/leapwithluvi/usk-perpustakaan/stargazers)
@@ -6,7 +6,7 @@
 [![GitHub commits](https://img.shields.io/github/commit-activity/t/leapwithluvi/usk-perpustakaan?style=social&logo=github)](https://github.com/leapwithluvi/usk-perpustakaan/commits)
 [![Pull requests](https://img.shields.io/github/issues-pr/leapwithluvi/usk-perpustakaan?style=social&logo=github)](https://github.com/leapwithluvi/usk-perpustakaan/pulls)
 
-![Digital Atelier Banner](https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=2000)
+![Digital Atelier Banner](./frontend/public/leapwithluvi(4).png)
 
 [![leapwithluvi](https://custom-icon-badges.demolab.com/badge/dibuat%20oleh%20-leapwithluvi-556bf2?logo=github&logoColor=white&labelColor=101827)](https://github.com/leapwithluvi)
 [![License](https://img.shields.io/badge/lisensi-MIT-blue.svg?color=dddddd&labelColor=000000)](https://github.com/leapwithluvi/usk-perpustakaan/blob/main/LICENSE)

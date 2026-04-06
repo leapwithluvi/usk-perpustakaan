@@ -142,3 +142,20 @@
     scrollbar-width: none;
   }
 }
+.quill-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  max-width: 100%;
+}
+
+.quill-content img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.quill-content table {
+  width: 100% !important;
+  display: block;
+  overflow-x: auto;
+}

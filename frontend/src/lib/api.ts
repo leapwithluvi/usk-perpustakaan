@@ -134,4 +134,5 @@ export const api = {
 
   // DASHBOARD
   getDashboardStats: () => fetchWithAuth("/dashboard/stats"),
+  getPublicStats: () => fetchWithAuth("/dashboard/public-stats"),
 };

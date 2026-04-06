@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { LogIn, Loader2, Mail, Lock, ArrowRight, ShieldCheck } from "lucide-react"
+import { LogIn, Loader2, Mail, Lock, ArrowRight, Book } from "lucide-react"
 import { api, setAuthToken } from "@/lib/api"
 
 interface LoginPageProps {
@@ -35,11 +35,11 @@ export function LoginPage({ onSuccess, onSwitchToRegister, onBack }: LoginPagePr
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <Card className="w-full max-w-md border-gray-100 dark:border-gray-800 shadow-2xl bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl">
         <CardHeader className="space-y-1 text-center pt-8 pb-4">
           <div className="mx-auto w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center mb-4 shadow-lg">
-            <ShieldCheck className="h-6 w-6 text-background" />
+            <Book className="h-6 w-6 text-background" />
           </div>
           <CardTitle className="text-2xl font-black tracking-tighter uppercase">Selamat Datang</CardTitle>
           <CardDescription className="text-xs font-bold uppercase tracking-widest text-muted-foreground">

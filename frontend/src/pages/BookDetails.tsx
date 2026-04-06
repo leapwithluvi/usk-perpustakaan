@@ -29,12 +29,19 @@ export function BookDetails({ onBack, onNavigate }: BookDetailsProps) {
   const [borrowing, setBorrowing] = useState(false)
   const [showBorrowConfirm, setShowBorrowConfirm] = useState(false)
   const [isLoggedIn] = useState(!!localStorage.getItem("token"))
+  const [hasActiveLoan, setHasActiveLoan] = useState(false)
 
   useEffect(() => {
     if (slug) {
       fetchBook(slug)
     }
   }, [slug])
+
+  useEffect(() => {
+    if (isLoggedIn && book?.id) {
+      checkUserActiveLoan()
+    }
+  }, [isLoggedIn, book?.id])
 
   const fetchBook = async (bookId: string) => {
     try {
@@ -52,10 +59,29 @@ export function BookDetails({ onBack, onNavigate }: BookDetailsProps) {
     }
   }
 
+  const checkUserActiveLoan = async () => {
+    try {
+      const res = await api.getMyBorrowings()
+      const myLoans = Array.isArray(res.data) ? res.data : []
+      const active = myLoans.some((loan: any) => 
+        loan.bookId === book.id && 
+        ['PENDING', 'APPROVED', 'BORROWED'].includes(loan.status)
+      )
+      setHasActiveLoan(active)
+    } catch (error) {
+      console.error("Gagal mengecek status peminjaman user:", error)
+    }
+  }
+
   const handleBorrowClick = () => {
     if (!isLoggedIn) {
       toast.error("Silakan login terlebih dahulu untuk meminjam buku.")
       onNavigate('profile') 
+      return
+    }
+
+    if (hasActiveLoan) {
+      toast.error("Anda sudah memiliki peminjaman aktif untuk buku ini.")
       return
     }
 
@@ -80,7 +106,8 @@ export function BookDetails({ onBack, onNavigate }: BookDetailsProps) {
       })
 
       toast.success("Pengajuan peminjaman berhasil dikirim! Silakan cek status di profil Anda.")
-      // Refresh book data to show updated stock (if backend updates it immediately)
+      setHasActiveLoan(true)
+      // Refresh book data to show updated stock
       fetchBook(book.slug)
     } catch (error: any) {
       toast.error(error.message || "Gagal mengajukan peminjaman")
@@ -245,10 +272,10 @@ export function BookDetails({ onBack, onNavigate }: BookDetailsProps) {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
                <Button 
                 onClick={handleBorrowClick}
-                disabled={borrowing || book.stock <= 0}
-                className="flex-1 lg:flex-none lg:px-16 h-16 sm:h-16 bg-black dark:bg-white text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-2xl hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:grayscale"
+                disabled={borrowing || book.stock <= 0 || hasActiveLoan}
+                className="w-full lg:w-auto lg:px-16 h-16 sm:h-16 bg-black dark:bg-white text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-2xl hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:grayscale"
                >
-                  {borrowing ? <Loader2 className="h-5 w-5 animate-spin" /> : book.stock <= 0 ? "Stok Habis" : "Pinjam Buku"}
+                  {borrowing ? <Loader2 className="h-5 w-5 animate-spin" /> : book.stock <= 0 ? "Stok Habis" : hasActiveLoan ? "Sudah Dipinjam" : "Pinjam Buku"}
                </Button>
                <Button 
                 onClick={handleShare}

@@ -1,8 +1,40 @@
+import { useEffect, useState } from "react"
+import { api } from "@/lib/api"
+
 export function Stats() {
+  const [statsData, setStatsData] = useState({
+    totalBooks: 0,
+    activeReaders: 0,
+    totalGenres: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await api.getPublicStats();
+        if (res && res.data) {
+          setStatsData(res.data);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil statistik:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const formatValue = (val: number, isPlus = true) => {
+    if (loading) return "...";
+    return isPlus ? `${val}+` : `${val}`;
+  };
+
   const stats = [
-    { label: "Koleksi Terkurasi", value: "1.250+", sub: "Buku & Manuskrip" },
-    { label: "Pembaca Aktif", value: "480+", sub: "Anggota Mingguan" },
-    { label: "Genre Spesialis", value: "12+", sub: "Kategori Kurasi" },
+    { label: "Koleksi Terkurasi", value: formatValue(statsData.totalBooks), sub: "Buku & Manuskrip" },
+    { label: "Pembaca Aktif", value: formatValue(statsData.activeReaders), sub: "Anggota Mingguan" },
+    { label: "Genre Spesialis", value: formatValue(statsData.totalGenres), sub: "Kategori Kurasi" },
     { label: "Ketersediaan", value: "98%", sub: "Akses Digital 24/7" },
   ]
 

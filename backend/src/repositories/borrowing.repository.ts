@@ -95,3 +95,16 @@ export const deleteBorrowingRepo = async (id: string) => {
     where: { id },
   });
 };
+
+// CHECK ACTIVE BORROWING BY USER AND BOOK
+export const checkActiveBorrowingRepo = async (userId: string, bookId: string) => {
+  return await prisma.borrowing.findFirst({
+    where: {
+      userId,
+      bookId,
+      status: {
+        in: [BorrowingStatus.PENDING, BorrowingStatus.APPROVED, BorrowingStatus.BORROWED]
+      }
+    }
+  });
+};

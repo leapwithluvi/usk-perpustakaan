@@ -19,3 +19,25 @@ export const getDashboardStatsRepo = async () => {
     pendingBorrowings,
   };
 };
+
+/**
+ * Mendapatkan statistik publik untuk landing page.
+ */
+export const getPublicStatsRepo = async () => {
+  const [totalBooks, activeReaders, totalGenres] = await Promise.all([
+    prisma.book.count(),
+    prisma.user.count({ 
+      where: { 
+        role: "USER", 
+        lastLoginAt: { not: null } 
+      } 
+    }),
+    prisma.category.count(),
+  ]);
+
+  return {
+    totalBooks,
+    activeReaders,
+    totalGenres,
+  };
+};

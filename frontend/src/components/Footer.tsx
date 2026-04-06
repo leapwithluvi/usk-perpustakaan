@@ -8,9 +8,9 @@ export function Footer({ onNavigate }: { onNavigate?: (path: string) => void }) 
           <div className="space-y-4">
             <h2 className="text-xl font-bold tracking-tighter text-black dark:text-white uppercase">DIGITAL ATELIER</h2>
             <div className="space-y-1">
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Tentang Kami</p>
-                <h3 className="text-2xl font-bold text-black dark:text-white">Siap untuk memulai?</h3>
+                {/* <h3 className="text-2xl font-bold text-black dark:text-white">Siap untuk memulai?</h3> */}
             </div>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Tentang Kami</p>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-sm leading-relaxed font-medium">
               Digital Atelier adalah ruang kolaborasi antara teknologi dan literatur. Kami hadir untuk memudahkan akses pengetahuan bagi semua orang, menghubungkan pembaca dengan karya-karya terbaik dari seluruh dunia.
             </p>

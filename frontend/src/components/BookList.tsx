@@ -48,7 +48,7 @@ export function BookList({ categories, onOpenGenre, onOpenBook }: BookListProps)
         </h2>
       </div>
       
-      <div className="space-y-32">
+      <div className="space-y-18">
         {categories.map((category) => (
           <BookShelf 
             key={category.id} 

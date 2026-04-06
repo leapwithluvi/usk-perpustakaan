@@ -14,8 +14,6 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Starting master seeding...");
 
-  await prisma.session.deleteMany();
-
   await seedCategories(prisma);
   await seedBooks(prisma);
   await seedUsers(prisma);

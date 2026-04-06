@@ -43,7 +43,7 @@ export function RegisterPage({ onSuccess, onSwitchToLogin, onBack }: RegisterPag
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <Card className="w-full max-w-md border-gray-100 dark:border-gray-800 shadow-2xl bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl">
         <CardHeader className="space-y-1 text-center pt-8 pb-4">
           <div className="mx-auto w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center mb-4 shadow-lg">

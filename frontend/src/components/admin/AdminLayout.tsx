@@ -1,8 +1,5 @@
-import { useState } from "react"
 import { Outlet, useNavigate, useLocation } from "react-router-dom"
 import { IMAGE_BASE_URL } from "@/lib/api"
-import { toast } from "sonner"
-import { ModalConfirm } from "@/components/ui/ModalConfirm"
 import {
   Sidebar,
   SidebarContent,
@@ -34,12 +31,8 @@ interface AdminLayoutProps {
 export function AdminLayout({ user, onExit }: AdminLayoutProps) {
   const navigate = useNavigate()
   const location = useLocation()
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
-
   const handleLogout = () => {
-    setShowLogoutConfirm(false)
     onExit()
-    toast.success("Berhasil keluar dari sesi admin")
   }
 
   const menuItems = [
@@ -88,7 +81,7 @@ export function AdminLayout({ user, onExit }: AdminLayoutProps) {
             <SidebarMenu>
                <SidebarMenuItem>
                 <SidebarMenuButton 
-                  onClick={() => setShowLogoutConfirm(true)}
+                  onClick={handleLogout}
                   className="h-11 rounded-xl px-4 text-muted-foreground hover:text-foreground hover:bg-muted"
                 >
                   <LogOut className="h-4 w-4" />
@@ -143,15 +136,6 @@ export function AdminLayout({ user, onExit }: AdminLayoutProps) {
           </main>
         </SidebarInset>
       </div>
-      <ModalConfirm
-        isOpen={showLogoutConfirm}
-        onClose={() => setShowLogoutConfirm(false)}
-        onConfirm={handleLogout}
-        title="Konfirmasi Keluar"
-        description="Apakah Anda yakin ingin keluar dari sesi administrator dan membersihkan data login Anda?"
-        confirmText="Keluar"
-        type="warning"
-      />
     </SidebarProvider>
   )
 }

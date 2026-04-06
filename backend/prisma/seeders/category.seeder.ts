@@ -13,6 +13,10 @@ export const seedCategories = async (prisma: PrismaClient) => {
     { name: "Sains & Pendidikan" },
     { name: "Bisnis & Ekonomi" },
     { name: "Agama & Spiritual" },
+    { name: "Sejarah & Budaya" },
+    { name: "Seni & Fotografi" },
+    { name: "Kesehatan & Olahraga" },
+    { name: "Masak & Kuliner" },
   ];
 
   for (const cat of categories) {

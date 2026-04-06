@@ -5,8 +5,9 @@ import {
   getListBorrowingRepo,
   updateBorrowingRepo,
   getMyBorrowingsRepo,
+  checkActiveBorrowingRepo,
 } from "@/repositories/borrowing.repository";
-import { updateBookStockRepo } from "@/repositories/book.repository";
+import { getBookByIdRepo, updateBookStockRepo } from "@/repositories/book.repository";
 import { HttpException } from "@/utils/httpException";
 import { IUpdateBorrowing, ICreateBorrowing } from "@/types/borrowing.type";
 import { BorrowingStatus } from "@prisma";
@@ -16,6 +17,28 @@ import crypto from "crypto";
  * Service untuk membuat pengajuan peminjaman baru.
  */
 export const createBorrowing = async (data: ICreateBorrowing) => {
+  // 1. Cek stok buku
+  const book = await getBookByIdRepo(data.bookId);
+  if (!book) {
+    throw new HttpException(404, "Buku tidak ditemukan");
+  }
+
+  if (book.stock <= 0) {
+    throw new HttpException(400, "Maaf, stok buku ini sedang habis");
+  }
+
+  // 2. Cek apakah user sudah meminjam buku ini dan belum dikembalikan
+  const activeBorrowing = await checkActiveBorrowingRepo(data.userId, data.bookId);
+  if (activeBorrowing) {
+    throw new HttpException(
+      400, 
+      "Anda sudah memiliki peminjaman aktif untuk buku ini. Silakan selesaikan peminjaman sebelumnya."
+    );
+  }
+
+  // 3. Kurangi stok buku segera setelah pengajuan (Immediate feedback)
+  await updateBookStockRepo(data.bookId, -1);
+
   return await createBorrowingRepo(data);
 };
 
@@ -68,6 +91,7 @@ export const updateBorrowing = async (
     data.status === BorrowingStatus.APPROVED &&
     existing.status === BorrowingStatus.PENDING
   ) {
+    // Stok sudah dikurangi saat pengajuan (PENDING)
     data.pickupCode = crypto.randomBytes(3).toString("hex").toUpperCase();
   }
 
@@ -79,7 +103,7 @@ export const updateBorrowing = async (
     if (!data.code || data.code !== existing.pickupCode) {
       throw new HttpException(400, "Kode pengambilan tidak valid");
     }
-    await updateBookStockRepo(existing.bookId, -1);
+    // Stok sudah dikurangi saat pengajuan (PENDING)
     data.returnCode = crypto.randomBytes(3).toString("hex").toUpperCase();
     data.borrowDate = new Date();
   }
@@ -96,7 +120,16 @@ export const updateBorrowing = async (
     data.returnDate = new Date();
   }
 
-  // Pembersihan field bantu 'code' agar tidak masuk ke Prisma secara langsung (meskipun diabaikan jika tidak ada di schema)
+  if (
+    data.status === BorrowingStatus.REJECTED &&
+    (existing.status === BorrowingStatus.PENDING || 
+     existing.status === BorrowingStatus.APPROVED || 
+     existing.status === BorrowingStatus.BORROWED)
+  ) {
+    await updateBookStockRepo(existing.bookId, 1);
+  }
+
+  // Pembersihan field bantu 'code' agar tidak masuk ke Prisma secara langsung
   delete data.code;
 
   return await updateBorrowingRepo(data, id);
@@ -106,6 +139,16 @@ export const updateBorrowing = async (
  * Service untuk menghapus catatan peminjaman.
  */
 export const deleteBorrowing = async (id: string) => {
-  await getBorrowingById(id);
+  const existing = await getBorrowingById(id);
+  
+  // Jika peminjaman sedang berjalan (PENDING, APPROVED, atau BORROWED), kembalikan stok saat data dihapus
+  if (
+    existing.status === BorrowingStatus.PENDING || 
+    existing.status === BorrowingStatus.APPROVED || 
+    existing.status === BorrowingStatus.BORROWED
+  ) {
+    await updateBookStockRepo(existing.bookId, 1);
+  }
+
   return await deleteBorrowingRepo(id);
 };
